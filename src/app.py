@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -8,9 +8,11 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/about")
-def about():
-    return "Idea is to shorten the given url"
+@app.route("/given-url", methods=["GET", "POST"])
+def given_url():
+    if request.method == "POST":
+        return render_template("given_url.html", code=request.form["code"])
+    return "This is not valid."
 
 
 if __name__ == "__main__":
