@@ -1,11 +1,16 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 
 @app.route("/")
-def home():
-    return "hello world"
+def index():
+    return render_template("index.html")
+
+
+@app.route("/about")
+def about():
+    return "Idea is to shorten the given url"
 
 
 if __name__ == "__main__":
