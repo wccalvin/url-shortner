@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 
 app = Flask(__name__)
 
@@ -12,7 +12,7 @@ def index():
 def given_url():
     if request.method == "POST":
         return render_template("given_url.html", code=request.form["code"])
-    return "This is not valid."
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
