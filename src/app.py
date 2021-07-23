@@ -1,4 +1,5 @@
 import json
+import os.path
 
 from flask import Flask, redirect, render_template, request, url_for
 
@@ -13,11 +14,16 @@ def index():
 @app.route("/given-url", methods=["GET", "POST"])
 def given_url():
     if request.method == "POST":
-        urls = {}
+        new_urls = {}
         short_name = request.form["code"]
-        urls[short_name] = {"url": request.form["url"]}
-        with open("urls.json", "w") as url_file:
-            json.dump(urls, url_file)
+        new_urls[short_name] = {"url": request.form["url"]}
+        if os.path.exists("urls.json"):
+            with open("urls.json") as urls_file:
+                urls = json.load(urls_file)
+                if short_name in urls.keys():
+                    return redirect(url_for("index"))
+        with open("urls.json", "a") as url_file:
+            json.dump(new_urls, url_file)
         return render_template("given_url.html", code=request.form["code"])
     return redirect(url_for("index"))
 
