@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 # repo specific
-urls.json
+.vscode
+urls.csv

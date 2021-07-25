@@ -1,4 +1,4 @@
-import json
+import csv
 import os.path
 
 from flask import Flask, flash, redirect, render_template, request, url_for
@@ -15,17 +15,18 @@ def index():
 @app.route("/given-url", methods=["GET", "POST"])
 def given_url():
     if request.method == "POST":
-        new_urls = {}
         short_name = request.form["code"]
-        new_urls[short_name] = {"url": request.form["url"]}
-        if os.path.exists("urls.json"):
-            with open("urls.json") as urls_file:
-                urls = json.load(urls_file)
-                if short_name in urls.keys():
+        url = request.form["url"]
+        if os.path.exists("urls.csv"):
+            with open("urls.csv", newline="") as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=",")
+                short_names = [i[0] for i in csv_reader]
+                if short_name in short_names:
                     flash(f"{short_name} is taken. Provide another short name.")
                     return redirect(url_for("index"))
-        with open("urls.json", "w") as url_file:
-            json.dump(new_urls, url_file)
+        with open("urls.csv", "a", newline="") as csv_file:
+            csv_writer = csv.writer(csv_file, delimiter=",")
+            csv_writer.writerow([short_name, url])
         return render_template("given_url.html", code=request.form["code"])
     return redirect(url_for("index"))
 
